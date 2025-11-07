@@ -1,0 +1,1 @@
+# for processing text template for both email and text msg
