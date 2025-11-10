@@ -3,17 +3,23 @@ import pandas as pd
 import win32com.client
 import os
 
-f_path = "C:/Users/Oliver/Desktop/Klaus's Code/Private_Code/email_lst.xlsx"
+def contact_filter():
+    # todo: for filtering out contact info directly from customer list
+
+    return
+
+f_path = "outlook_contact.xlsx"
 # f_path = "C:/Users/Oliver/Desktop/SPAM EMAILS/client_susan.xlsx"
 
-attach_path = "C:/Users/Oliver/Desktop/Klaus's Code/Private_Code/SPAM EMAILS/hol.jpg"
-body_path = "C:/Users/Oliver/Desktop/Klaus's Code/Private_Code/SPAM EMAILS/hol_2024.txt"
+attach_path = "hol.jpg"
+body_path = "hol_2024.txt"
 subject_txt = 'Holidays Greeting'
 
 df = pd.read_excel(f_path)[["to", "cc"]]
 
 f = open(body_path, "r", encoding='utf-8')
 body_txt = f.read()
+print(body_txt)
 f.close()
 
 # extract only to and cc column for mass spamming
@@ -33,7 +39,7 @@ for i in range(len(to_n_cc["to"])):
     newmail.CC = i_cc
 
     newmail.BodyFormat = 2
-    attachment = newmail.Attachments.Add(attach_path)  # Attach the image
+    attachment = newmail.Attachments.Add(os.path.abspath(attach_path))  # Attach the image
     attachment.PropertyAccessor.SetProperty("http://schemas.microsoft.com/mapi/proptag/0x3712001F", "myimage")  # Set Content ID for inline use
     newmail.HTMLBody = f'''
     <html>
@@ -44,6 +50,6 @@ for i in range(len(to_n_cc["to"])):
     </html>
     '''
 
-    # newmail.Display()
-    newmail.Send()
+    newmail.Display()
+    # newmail.Send()
     # sleep(100)
