@@ -1,3 +1,4 @@
+import tkinter
 from time import sleep
 import pandas as pd
 import win32com.client
@@ -20,7 +21,7 @@ def new_email():
         olmailitem = 0x0
 
         newmail = ol.CreateItem(olmailitem)
-        newmail.Subject = subject_txt
+        newmail.Subject = title_box.get()
         newmail.To = i_to
         newmail.CC = i_cc
 
@@ -37,33 +38,44 @@ def new_email():
         </html>
         '''
 
-        newmail.Display()
+        if if_direct_send.get() == 1:
+            print(f"---Auto Send is ON, auto sending emails to {i_to} ---")
+            newmail.Send()
+        else:
+            print(f"---Auto Send is OFF, displaying emails to {i_to} ---")
+            newmail.Display()
     return
 
 f_path = "outlook_contact.xlsx"
 # f_path = "C:/Users/Oliver/Desktop/SPAM EMAILS/client_susan.xlsx"
 
 attach_path = "hol.jpg"
-body_path = "hol_2024.txt"
-subject_txt = 'Holidays Greeting'
+body_path = "sample_body.txt"
+# subject_txt = 'Holidays Greeting'
 
 df = pd.read_excel(f_path)[["to", "cc"]]
 
 f = open(body_path, "r", encoding='utf-8')
 body_txt = f.read()
-print(body_txt)
 f.close()
 
 # run GUI
 root = Tk()
-root.geometry("300x200")
-root.title('Invoice Email Auto - By Klaus')
+root.geometry("350x200")
+root.title('Auto Email Outreach - By Klaus')
 
 # for entering title for email
 title_label = Label(root, text='Title of Email', font=("Comic Sans MS", 14))
 title_label.grid(row=1, column=1)
 title_box = Entry(root, width=20, font=("Comic Sans MS", 12))
 title_box.grid(row=2, column=1)
+
+# if direct send
+# ds_label = Label(root, text='If direct send?', font=("Comic Sans MS", 8))
+# ds_label.grid(row=1, column=2)
+if_direct_send = tkinter.IntVar()
+ds_box = Checkbutton(root, text='If direct send?', onvalue=1, offvalue=0, variable=if_direct_send)
+ds_box.grid(row=1, column=2)
 
 # label for showing current path
 new_email_button = Button(root, text='New Email', font=("Comic Sans MS", 14),
